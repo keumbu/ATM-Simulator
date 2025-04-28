@@ -3,7 +3,27 @@
 int main(){
     int option;
     double balance = 1000.0; // Initial balance  
- 
+
+    int pin = 4321; // ATM PIN
+    int enteredPin;
+    int attempts = 3;// Number of attempts
+    while(attempts > 0){
+        printf("Enter your ATM PIN: ");
+        scanf("%d", &enteredPin);
+        if(enteredPin == pin){
+            printf("PIN accepted.\n");
+            break;
+        } else {
+            attempts--;
+            printf("Incorrect PIN. You have %d attempts left.\n", attempts);
+
+            if(attempts == 0){
+                printf("Too many incorrect attempts. Exiting...\n");
+                return 1; // Exit the program
+        }
+    }
+   
+}
 
     while(1){
         printf("ATM Simulator\n");
