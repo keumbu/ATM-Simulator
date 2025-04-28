@@ -3,6 +3,8 @@ int pinVerification(int pin);
 void checkBalance(double balance);
 void depositMoney(double *balance);
 void withdrawMoney(double *balance);
+void displayMenu();
+void clearInvalidBuffer();
 
 int main(){
     double balance = 1000.0; // Initial balance  
@@ -12,7 +14,13 @@ int main(){
 
     while(attempts > 0){  // PIN verification loop
         printf("Enter your PIN: ");
-        scanf("%d", &enteredPin);
+       if( scanf("%d", &enteredPin) != 1) { // Check if input is a number
+            printf("Invalid input.Please enter numbers only.\n");
+            clearInvalidBuffer(); // Clear the input buffer
+            continue; // Restart the loop
+        }
+        clearInvalidBuffer(); // Clear the input buffer after scanf
+
         if(pinVerification(enteredPin)){
             printf("PIN accepted! Access granted.\n");
             break; //exit the loop if PIN is correct
@@ -21,8 +29,8 @@ int main(){
             printf("Incorrect PIN. You have %d attempts left.\n", attempts);
 
             if(attempts == 0){
-                printf("You have been locked out due to too mamy faild attempts.\n");
-                return 1; // Exit the program
+                printf("You have been locked out due to too many faild attempts.\n");
+                return 0; // Exit the program
         }
     }
    
@@ -31,9 +39,14 @@ int main(){
 int option;
     while(1){
         displayMenu();
-        printf("Enter your option");
-        scanf("%d",&option);
-       
+        printf("Enter your option:  ");
+       if( scanf("%d",&option) != 1) { // Check if input is a number
+            printf("Invalid input. Please enter a number.\n");
+            clearInvalidBuffer(); // Clear the input buffer
+            continue; // Restart the loop
+        }
+       clearInvalidBuffer(); // Always Clear after the scanf 
+
         switch(option){
             case 1:
                 checkBalance(balance);
@@ -69,10 +82,15 @@ int option;
     void depositMoney(double *balance){
         double deposit;
         printf("Enter the amount to deposit: ");
-        scanf("%1f",&deposit);
+       if( scanf("%lf",&deposit) != 1 || deposit <= 0) { // Check if input is a number
+            printf("Invalid deposit amount.\n");
+          clearInvalidBuffer(); // Clear the input buffer
+            return; // Exit the function
+        }
+        clearInvalidBuffer();
         if(deposit > 0){
             *balance += deposit; //update balance
-             printf("Deposit successful! New balance: $%.2\n",*balance);
+             printf("Deposit successful! New balance: $%.2f\n",*balance);
         }else {
             printf("Invalid deposit amount.\n");
         }
@@ -80,18 +98,28 @@ int option;
     void withdrawMoney(double *balance) {
          double withdraw;
           printf("Enter the amount to withdraw: ");
-          scanf("%1f",&withdraw);
+          if(scanf("%lf",&withdraw) !=1 || withdraw <= 0) { // Check if input is a number
+            printf("Invalid withdraw amount.\n");
+            clearInvalidBuffer(); // Clear the input buffer
+            return; // Exit the function
+        }
          if(withdraw > 0 && withdraw <= *balance) {
             *balance -=withdraw; //Update balance
+            printf("Withdrawal successful! New balance: $%.2f\n",*balance);
          } else {
             printf("Insufficient balance.\n");
           }
          }
    //Function to display ATM menu
    void displayMenu(){
-       printf("\n=== ATM Simulator ===\n");
+       printf("\n ATM Simulator \n");
        printf("1. Check Balance\n");
        printf("2. Deposit Money\n");
        printf("3. Withdraw Money\n");
        printf("4. Exit\n");
    }
+   //Function to clear invalid input
+   int c;
+    void clearInvalidBuffer() {
+         while((c = getchar()) != '\n' && c !=EOF); // Clear all the input buffer
+    }
